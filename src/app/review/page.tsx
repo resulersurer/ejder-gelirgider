@@ -8,7 +8,14 @@ export const dynamic = "force-dynamic";
 const money = (amount: number, currency: string) => new Intl.NumberFormat("tr-TR", { style: "currency", currency }).format(amount);
 
 export default async function ReviewPage() {
-  const session = await requireSession();
+  let session;
+  try {
+    session = await requireSession();
+  } catch (error) {
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") throw error;
+    console.error("Review session verification failed", error instanceof Error ? error.message : "unknown");
+    throw error;
+  }
   if (session.role === "VIEWER") redirect("/reports");
   const [items, categories] = await Promise.all([getReviewItems(), getReviewCategories()]);
   return <main className="min-h-screen bg-[#f6f7f8] p-5 text-[#263441] lg:p-10"><div className="mx-auto max-w-5xl"><a className="text-xs font-semibold text-[#168360]" href="/">← Dashboard</a><header className="mt-5 flex items-end justify-between"><div><p className="text-[10px] font-bold tracking-[.8px] text-[#8993a0]">E-POSTA İŞLEME AKIŞI</p><h1 className="mt-1 text-2xl font-semibold">İnceleme bekleyenler</h1><p className="mt-2 text-sm text-[#718091]">Parser&apos;ın kesinleştiremediği banka hareketleri.</p></div><span className="rounded-full bg-[#fdf2df] px-3 py-1 text-xs font-semibold text-[#a76d22]">{items.length} kayıt</span></header><section className="mt-7 space-y-4">{items.length ? items.map((item) => <article className="rounded-md border border-[#e5e9ee] bg-white p-5" key={item.id}><div className="flex flex-col justify-between gap-4 sm:flex-row"><div><div className="flex items-center gap-3"><strong>{item.bank}</strong><span className="rounded bg-[#fdf2df] px-2 py-1 text-[10px] font-semibold text-[#a76d22]">Güven: %{Math.round(item.confidenceScore * 100)}</span></div><p className="mt-2 text-xl font-semibold text-[#263441]">{item.direction === "IN" ? "+" : "−"}{money(item.amount, item.currency)}</p><p className="mt-2 text-xs text-[#718091]">{item.transactionDate.toLocaleString("tr-TR")} · {item.direction === "IN" ? item.sender ?? "Gönderen yok" : item.receiver ?? "Alıcı yok"}</p></div><div className="text-left sm:text-right"><p className="text-xs font-semibold">{item.emailSubject}</p><p className="mt-1 text-xs text-[#84909d]">{item.emailSender}</p></div></div><p className="mt-4 border-t border-[#edf0f2] pt-4 text-sm text-[#5f6d7c]">{item.description ?? "Açıklama bulunamadı."}</p><ReviewEditor amount={item.amount} bank={item.bank} categories={categories} categoryId={item.categoryId} direction={item.direction} id={item.id} /></article>) : <div className="rounded-md border border-dashed border-[#cfd7dd] bg-white px-5 py-14 text-center text-sm text-[#718091]">İnceleme bekleyen işlem yok. Düşük güvenli e-posta eşleşmeleri burada görünür.</div>}</section></div></main>;

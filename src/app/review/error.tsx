@@ -1,6 +1,10 @@
 "use client";
+import { useEffect } from "react";
 
-export default function ReviewError({ reset }: { reset: () => void }) {
+export default function ReviewError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => {
+    console.error("Review page failed", error.digest ?? error.message);
+  }, [error]);
   return (
     <main className="grid min-h-screen place-items-center bg-[#f6f7f8] p-6 text-[#263441]">
       <section className="max-w-md rounded-md border border-[#e5e9ee] bg-white p-7 text-center">
