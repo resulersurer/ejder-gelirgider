@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Obsolete local Prisma output from before the standard client migration
+/src/generated/
+
 
 .vercel
 .env*

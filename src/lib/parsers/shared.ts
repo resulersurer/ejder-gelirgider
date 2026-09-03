@@ -1,4 +1,5 @@
 import type { MailForParsing, ParsedTransaction } from "./types";
+import { normalizeCurrency } from "@/lib/currency";
 
 const amountPattern = /(?:tutar|işlem tutarı|amount)[^\d]*([\d.]+(?:,\d{2})?)\s*(TL|TRY|USD|EUR|€|\$)?/i;
 const referencePattern = /(?:referans|işlem no|işlem numarası|referans no)[:\s#-]*([A-Z0-9-]{5,})/i;
@@ -16,5 +17,4 @@ export function parseBankNotification(bank: string, mail: MailForParsing): Parse
   return { bank, transactionType, direction, amount, currency: normalizeCurrency(match[2]), transactionDate: mail.date, description: cleanDescription(mail.text), referenceNumber: mail.text.match(referencePattern)?.[1], confidenceScore: 0.87 };
 }
 
-function normalizeCurrency(value?: string) { return value === "€" ? "EUR" : value === "$" ? "USD" : value?.toUpperCase() ?? "TRY"; }
 function cleanDescription(text: string) { return text.replace(/\s+/g, " ").trim().slice(0, 500); }
