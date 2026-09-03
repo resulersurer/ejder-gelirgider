@@ -1,11 +1,10 @@
 import { parseAkbank } from "./akbank";
 import { parseGaranti } from "./garanti";
 import { parseGeneric } from "./generic";
+import { parseIsbank } from "./isbank";
 import type { BankParser, MailForParsing, ParsedTransaction } from "./types";
 
-import { parseIsbank } from "./isbank";
-
-const parsersByType: Record<string, BankParser> = { akbank: parseAkbank, garanti: parseGaranti, isbank: parseIsbank };
+const parsersByType: Partial<Record<string, BankParser>> = { akbank: parseAkbank, garanti: parseGaranti, isbank: parseIsbank };
 
 // Only rules loaded from the EmailRule table are accepted for financial processing.
 export type EmailRuleConfig = { bank: string; senderEmail: string; subjectPattern: string | null; contentPattern: string | null; parserType: string };
@@ -18,8 +17,14 @@ export function detectAndParse(mail: MailForParsing, rules: EmailRuleConfig[] = 
     return senderMatches && subjectMatches && contentMatches;
   });
   if (matchedRule) {
-    const transaction = (parsersByType[matchedRule.parserType] ?? ((m: MailForParsing) => parseGeneric(matchedRule.bank, m)))(mail);
-    return transaction ? { ...transaction, bank: matchedRule.bank, confidenceScore: 0.95 } : null;
+    const specificParser = parsersByType[matchedRule.parserType];
+    const transaction = specificParser
+      ? specificParser(mail)
+      : parseGeneric(matchedRule.bank, mail);
+    if (!transaction) return null;
+    // Banka-spesifik parser: yüksek güven → CONFIRMED
+    // Generic fallback parser: düşük güven → NEEDS_REVIEW kuyruğuna düşer
+    return { ...transaction, bank: matchedRule.bank, confidenceScore: specificParser ? 0.95 : 0.75 };
   }
 
   return null;

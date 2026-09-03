@@ -16,7 +16,8 @@ export async function runDashboardMailScan(): Promise<MailScanState> {
     return {
       message: `Tarama tamamlandı: ${result.processed} işlem dashboard'a işlendi, ${result.ignored} mail banka giriş/çıkışı olmadığı için atlandı, ${result.skipped} tekrarlandı.`,
     };
-  } catch {
+  } catch (err) {
+    console.error("[mail-scan] Posta taraması başarısız:", err instanceof Error ? err.message : err);
     return { error: "Posta kutusu taranamadı. IMAP ayarlarını ve sunucu loglarını kontrol edin." };
   }
 }

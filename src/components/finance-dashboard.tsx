@@ -12,7 +12,6 @@ import {
   MailCheck,
   PieChart,
   ScrollText,
-  Settings2,
   ShieldCheck,
   Tags,
   WalletCards,
@@ -22,6 +21,7 @@ import type { Role } from "@/lib/session-token";
 import { normalizeCurrency } from "@/lib/currency";
 import { BankDistributionChart, CashFlowChart } from "./dashboard-charts";
 import { MailScanButton } from "./mail-scan-button";
+import { MailLiveListener } from "./mail-live-listener";
 
 const roleLabel: Record<Role, string> = { ADMIN: "Yönetici", FINANCE: "Finans", VIEWER: "Görüntüleyici" };
 
@@ -102,17 +102,7 @@ export function FinanceDashboard({
             </Link>
           ))}
         </nav>
-        <div className="mt-auto rounded-md border border-[#3b4e5e] p-3 text-[#b9c6d0]">
-          <div className="flex items-center gap-2">
-            <Settings2 size={15} />
-            <span className="text-xs font-semibold">Sistem durumu</span>
-          </div>
-          <p className="mt-2 text-[11px] text-[#91a2af]">IMAP akışı aktif</p>
-          <span className={`mt-2 inline-flex items-center gap-1 text-[10px] ${data.connected ? "text-[#65c79d]" : "text-[#e9ad5f]"}`}>
-            <i className="h-1.5 w-1.5 rounded-full bg-current" />
-            {data.connected ? "Veritabanı bağlı" : "Bağlantı bekleniyor"}
-          </span>
-        </div>
+        <MailLiveListener dbConnected={data.connected} />
       </aside>
 
       <main className="lg:ml-[236px]">
@@ -159,10 +149,14 @@ export function FinanceDashboard({
               </Link>
             </div>
             <div className="grid sm:grid-cols-2 xl:grid-cols-4">
-              <MetricCard amount={data.todayIncome} caption="Bugünün onaylanmış girişleri" direction="in" label="Bugün giriş" />
-              <MetricCard amount={data.todayExpense} caption="Bugünün onaylanmış çıkışları" direction="out" label="Bugün çıkış" />
-              <MetricCard amount={data.todayIncome - data.todayExpense} caption="Günlük net nakit akışı" direction="net" label="Bugün net" />
-              <MetricCard amount={data.monthIncome - data.monthExpense} caption="Bu ayın net pozisyonu" direction="net" label="Bu ay net" />
+              <MetricCard amount={data.todayIncome} caption="Bugünün onaylanmış girişleri" direction="in" label="Günlük gelir" />
+              <MetricCard amount={data.todayExpense} caption="Bugünün onaylanmış çıkışları" direction="out" label="Günlük gider" />
+              <MetricCard amount={data.weekIncome} caption="Pazartesiden bugüne girişler" direction="in" label="Haftalık gelir" />
+              <MetricCard amount={data.weekExpense} caption="Pazartesiden bugüne çıkışlar" direction="out" label="Haftalık gider" />
+              <MetricCard amount={data.monthIncome} caption="Ay başından bugüne girişler" direction="in" label="Aylık gelir" />
+              <MetricCard amount={data.monthExpense} caption="Ay başından bugüne çıkışlar" direction="out" label="Aylık gider" />
+              <MetricCard amount={data.yearIncome} caption="Yıl başından bugüne girişler" direction="in" label="Yıllık gelir" />
+              <MetricCard amount={data.yearExpense} caption="Yıl başından bugüne çıkışlar" direction="out" label="Yıllık gider" />
             </div>
           </section>
 
