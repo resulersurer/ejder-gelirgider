@@ -78,7 +78,7 @@ export function FinanceDashboard({
   const foreign = data.currencySummaries.filter((item) => item.currency !== "TRY");
   const navigation = [
     ["Dashboard", "/", PieChart],
-    ["İşlemler", "#transactions", ScrollText],
+    ["İşlemler", "/transactions", ScrollText],
     ["İnceleme", "/review", ShieldCheck],
     ["Raporlar", "/reports", FileBarChart],
     ["Mail Kuralları", "/admin/email-rules", Tags],
@@ -248,9 +248,9 @@ export function FinanceDashboard({
                 <p className="text-[10px] font-bold tracking-[.13em] text-[#7d8995]">HAREKETLER</p>
                 <h2 className="mt-1 text-base font-semibold">Son işlenen işlemler</h2>
               </div>
-              <div className="flex gap-2">
-                <Link className="inline-flex items-center gap-2 rounded-md border border-[#dbe2e6] px-3 py-2 text-xs font-semibold text-[#536473]" href="/reports"><ListFilter size={14} />Filtrele</Link>
-                <Link className="inline-flex items-center gap-2 rounded-md bg-[#1f765b] px-3 py-2 text-xs font-semibold text-white" href="/reports">Raporlara git <ChevronRight size={14} /></Link>
+            <div className="flex gap-2">
+                <Link className="inline-flex items-center gap-2 rounded-md border border-[#dbe2e6] px-3 py-2 text-xs font-semibold text-[#536473]" href="/transactions"><ListFilter size={14} />Filtrele</Link>
+                <Link className="inline-flex items-center gap-2 rounded-md bg-[#1f765b] px-3 py-2 text-xs font-semibold text-white" href="/transactions">Tüm işlemleri gör <ChevronRight size={14} /></Link>
               </div>
             </div>
             <div className="overflow-x-auto">
