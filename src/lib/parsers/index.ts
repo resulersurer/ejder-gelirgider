@@ -20,7 +20,10 @@ export function detectAndParse(mail: MailForParsing, rules: EmailRuleConfig[] = 
     const subjectMatches = !rule.subjectPattern || safeRegExp(rule.subjectPattern)?.test(mail.subject) !== false;
     return senderMatches && subjectMatches;
   });
-  if (matchedRule) return (parsersByType[matchedRule.parserType] ?? ((m: MailForParsing) => parseGeneric(matchedRule.bank, m)))(mail);
+  if (matchedRule) {
+    const transaction = (parsersByType[matchedRule.parserType] ?? ((m: MailForParsing) => parseGeneric(matchedRule.bank, m)))(mail);
+    return transaction ? { ...transaction, bank: matchedRule.bank, confidenceScore: 0.95 } : null;
+  }
 
   const signature = fallbackSignatures.find(({ pattern }) => pattern.test(`${mail.sender} ${mail.subject} ${mail.text}`));
   return signature ? parsersByType[signature.parserType](mail) : null;
