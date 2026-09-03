@@ -12,6 +12,7 @@ export async function ingestBankEmails(): Promise<IngestionResult> {
   if (!user || !pass) throw new Error("Yandex IMAP bilgileri yapılandırılmadı.");
   const client = new ImapFlow({ host: "imap.yandex.com", port: 993, secure: true, auth: { user, pass }, logger: false });
   const result = { processed: 0, ignored: 0, skipped: 0 };
+  const rules = await db.emailRule.findMany({ where: { active: true }, select: { bank: true, senderEmail: true, subjectPattern: true, parserType: true } });
   await client.connect();
   const lock = await client.getMailboxLock("INBOX");
   try {
@@ -23,7 +24,7 @@ export async function ingestBankEmails(): Promise<IngestionResult> {
       if (await db.emailProcessingLog.findUnique({ where: { emailMessageId: messageId }, select: { id: true } })) { result.skipped++; continue; }
       const sender = parsedMail.from?.text ?? "Bilinmeyen gönderici";
       const subject = parsedMail.subject ?? "Konu yok";
-      const transaction = detectAndParse({ sender, subject, text: parsedMail.text ?? parsedMail.html ? String(parsedMail.text ?? parsedMail.html) : "", date: parsedMail.date ?? new Date() });
+      const transaction = detectAndParse({ sender, subject, text: parsedMail.text ?? parsedMail.html ? String(parsedMail.text ?? parsedMail.html) : "", date: parsedMail.date ?? new Date() }, rules);
       if (!transaction) { await db.emailProcessingLog.create({ data: { emailMessageId: messageId, sender, subject, status: "IGNORED" } }); result.ignored++; continue; }
       await db.$transaction([
         db.bankTransaction.create({ data: { ...transaction, emailSubject: subject, emailMessageId: messageId, emailSender: sender, status: transaction.confidenceScore >= 0.9 ? "CONFIRMED" : "NEEDS_REVIEW" } }),
