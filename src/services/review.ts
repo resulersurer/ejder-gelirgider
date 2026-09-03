@@ -13,5 +13,9 @@ export async function getReviewItems(): Promise<ReviewItem[]> {
 
 export async function getReviewCategories() {
   if (!db) return [];
-  return db.category.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } });
+  try {
+    return await db.category.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } });
+  } catch {
+    return [];
+  }
 }
