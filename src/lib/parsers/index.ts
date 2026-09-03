@@ -1,17 +1,13 @@
 import { parseAkbank } from "./akbank";
 import { parseGaranti } from "./garanti";
-import { parseIsbank } from "./isbank";
 import { parseGeneric } from "./generic";
 import type { BankParser, MailForParsing, ParsedTransaction } from "./types";
 
-const parsersByType: Record<string, BankParser> = { akbank: parseAkbank, garanti: parseGaranti, isbank: parseIsbank };
-const fallbackSignatures = [
-  { bank: "Akbank", parserType: "akbank", pattern: /akbank/i },
-  { bank: "Garanti BBVA", parserType: "garanti", pattern: /garanti|bbva/i },
-  { bank: "İş Bankası", parserType: "isbank", pattern: /iş bankası|isbank/i },
-];
+import { parseIsbank } from "./isbank";
 
-// Rules loaded from the EmailRule table; new banks can be added here without touching parser code.
+const parsersByType: Record<string, BankParser> = { akbank: parseAkbank, garanti: parseGaranti, isbank: parseIsbank };
+
+// Only rules loaded from the EmailRule table are accepted for financial processing.
 export type EmailRuleConfig = { bank: string; senderEmail: string; subjectPattern: string | null; parserType: string };
 
 export function detectAndParse(mail: MailForParsing, rules: EmailRuleConfig[] = []): ParsedTransaction | null {
@@ -25,8 +21,7 @@ export function detectAndParse(mail: MailForParsing, rules: EmailRuleConfig[] = 
     return transaction ? { ...transaction, bank: matchedRule.bank, confidenceScore: 0.95 } : null;
   }
 
-  const signature = fallbackSignatures.find(({ pattern }) => pattern.test(`${mail.sender} ${mail.subject} ${mail.text}`));
-  return signature ? parsersByType[signature.parserType](mail) : null;
+  return null;
 }
 
 function safeRegExp(pattern: string) {

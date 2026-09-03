@@ -32,6 +32,7 @@ const EMAIL_RULES = [
   { bank: "Garanti BBVA", senderEmail: "garantibbva@garantibbva.com.tr", subjectPattern: "Gelen Para Transferi", parserType: "garanti" },
   { bank: "Garanti BBVA", senderEmail: "garantibbva@garantibbva.com.tr", subjectPattern: "Yurtdışından Gelen Para Transferi", parserType: "garanti" },
   { bank: "Halkbank", senderEmail: "internet.subesi@bilgi.halkbank.com.tr", subjectPattern: "HESABA GELEN HAVALE BİLGİLENDİRME FORMU", parserType: "generic" },
+  { bank: "Halkbank", senderEmail: "internet.subesi@bilgi.halkbank.com.tr", subjectPattern: "HESAPTAN|HESABINIZDAN|PARA ÇIKIŞ", parserType: "generic" },
   { bank: "İş Bankası", senderEmail: "bilgilendirme@ileti.isbank.com.tr", subjectPattern: "hesabınıza para geldi\\.", parserType: "isbank" },
   { bank: "İş Bankası", senderEmail: "bilgilendirme@ileti.isbank.com.tr", subjectPattern: "hesabınızdan", parserType: "isbank" },
   { bank: "QNB", senderEmail: "email@email.qnb.com.tr", subjectPattern: "QNB hesabınıza tarafından gönderilmiştir\\.", parserType: "generic" },
@@ -39,10 +40,12 @@ const EMAIL_RULES = [
   { bank: "VakıfBank", senderEmail: "bildirim@vakifbank.com.tr", subjectPattern: "Mevduat Hesabınıza Para Girişleri", parserType: "generic" },
   { bank: "VakıfBank", senderEmail: "bildirim@vakifbank.com.tr", subjectPattern: "Mevduat Hesabı Para Çıkışları", parserType: "generic" },
   { bank: "Yapı Kredi", senderEmail: "yapikredi@iletisim.yapikredi.com.tr", subjectPattern: "Akıllı Asistan-Gelen HAVALE", parserType: "generic" },
+  { bank: "Yapı Kredi", senderEmail: "yapikredi@iletisim.yapikredi.com.tr", subjectPattern: "GİDEN HAVALE|HESABINIZDAN|PARA ÇIKIŞ", parserType: "generic" },
   { bank: "Ziraat Bankası", senderEmail: "ziraatbankasi@ileti.ziraatbank.com.tr", subjectPattern: "hesabınıza gönderilmiştir", parserType: "generic" },
   { bank: "Ziraat Bankası", senderEmail: "ziraatbankasi@ileti.ziraatbank.com.tr", subjectPattern: "hesabınızdan", parserType: "generic" },
   { bank: "Ziraat Bankası", senderEmail: "ziraatbankasi@ileti.ziraatbank.com.tr", subjectPattern: "hesabınıza", parserType: "generic" },
   { bank: "DenizBank", senderEmail: "info@e-posta.denizbank.com", subjectPattern: "hesabınıza", parserType: "generic" },
+  { bank: "DenizBank", senderEmail: "info@e-posta.denizbank.com", subjectPattern: "hesabınızdan|çıkış|ödeme", parserType: "generic" },
 ];
 
 const db = new PrismaClient();
