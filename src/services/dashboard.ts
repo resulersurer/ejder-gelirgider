@@ -9,11 +9,12 @@ export type TransactionRow = {
 
 export type DailyFlowPoint = { date: string; income: number; expense: number };
 export type BankShare = { bank: string; total: number; percentage: number };
+export type BankSummary = { bank: string; income: number; expense: number; net: number };
 
 export type DashboardData = {
   connected: boolean; todayIncome: number; todayExpense: number;
   monthIncome: number; monthExpense: number; transactions: TransactionRow[];
-  lastCheckedAt: Date | null; dailyFlow: DailyFlowPoint[]; bankDistribution: BankShare[]; reviewCount: number;
+  lastCheckedAt: Date | null; dailyFlow: DailyFlowPoint[]; bankDistribution: BankShare[]; bankSummaries: BankSummary[]; reviewCount: number;
 };
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -48,16 +49,24 @@ export async function getDashboardData(): Promise<DashboardData> {
     });
 
     const bankTotals = new Map<string, number>();
-    for (const item of monthTransactions) bankTotals.set(item.bank, (bankTotals.get(item.bank) ?? 0) + item.amount.toNumber());
+    const bankSummaryTotals = new Map<string, { income: number; expense: number }>();
+    for (const item of monthTransactions) {
+      const amount = item.amount.toNumber();
+      bankTotals.set(item.bank, (bankTotals.get(item.bank) ?? 0) + amount);
+      const summary = bankSummaryTotals.get(item.bank) ?? { income: 0, expense: 0 };
+      summary[item.direction === "IN" ? "income" : "expense"] += amount;
+      bankSummaryTotals.set(item.bank, summary);
+    }
     const totalVolume = [...bankTotals.values()].reduce((sum, value) => sum + value, 0);
     const bankDistribution: BankShare[] = [...bankTotals.entries()].sort((a, b) => b[1] - a[1]).map(([bank, total]) => ({ bank, total, percentage: totalVolume ? Math.round((total / totalVolume) * 1000) / 10 : 0 }));
+    const bankSummaries: BankSummary[] = [...bankSummaryTotals.entries()].sort((a, b) => (b[1].income + b[1].expense) - (a[1].income + a[1].expense)).map(([bank, summary]) => ({ bank, ...summary, net: summary.income - summary.expense }));
 
-    return { connected: true, todayIncome: daily.income, todayExpense: daily.expense, monthIncome: monthly.income, monthExpense: monthly.expense, lastCheckedAt: lastLog?.processedAt ?? null, dailyFlow, bankDistribution, reviewCount, transactions: recent.map((item) => ({ id: item.id, date: formatDate(item.transactionDate), time: formatTime(item.transactionDate), bank: item.bank, type: item.transactionType, direction: item.direction, amount: item.amount.toNumber(), counterparty: item.direction === "IN" ? item.sender ?? "-" : item.receiver ?? "-", description: item.description ?? "-", category: item.category?.name ?? "Kategorisiz", status: item.status })) };
+    return { connected: true, todayIncome: daily.income, todayExpense: daily.expense, monthIncome: monthly.income, monthExpense: monthly.expense, lastCheckedAt: lastLog?.processedAt ?? null, dailyFlow, bankDistribution, bankSummaries, reviewCount, transactions: recent.map((item) => ({ id: item.id, date: formatDate(item.transactionDate), time: formatTime(item.transactionDate), bank: item.bank, type: item.transactionType, direction: item.direction, amount: item.amount.toNumber(), counterparty: item.direction === "IN" ? item.sender ?? "-" : item.receiver ?? "-", description: item.description ?? "-", category: item.category?.name ?? "Kategorisiz", status: item.status })) };
   } catch {
     return emptyDashboard(false);
   }
 }
 
 function emptyDashboard(connected: boolean): DashboardData {
-  return { connected, todayIncome: 0, todayExpense: 0, monthIncome: 0, monthExpense: 0, transactions: [], lastCheckedAt: null, dailyFlow: [], bankDistribution: [], reviewCount: 0 };
+  return { connected, todayIncome: 0, todayExpense: 0, monthIncome: 0, monthExpense: 0, transactions: [], lastCheckedAt: null, dailyFlow: [], bankDistribution: [], bankSummaries: [], reviewCount: 0 };
 }
