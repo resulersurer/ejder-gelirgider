@@ -13,7 +13,7 @@ export type EmailRuleConfig = { bank: string; senderEmail: string; subjectPatter
 export function detectAndParse(mail: MailForParsing, rules: EmailRuleConfig[] = []): ParsedTransaction | null {
   const matchedRule = rules.find((rule) => {
     const senderMatches = mail.sender.toLowerCase().includes(rule.senderEmail.toLowerCase());
-    const subjectMatches = !rule.subjectPattern || safeRegExp(rule.subjectPattern)?.test(mail.subject) !== false;
+    const subjectMatches = !rule.subjectPattern || safeRegExp(rule.subjectPattern).test(mail.subject);
     return senderMatches && subjectMatches;
   });
   if (matchedRule) {
@@ -28,6 +28,6 @@ function safeRegExp(pattern: string) {
   try {
     return new RegExp(pattern, "i");
   } catch {
-    return null;
+    return /a^/;
   }
 }

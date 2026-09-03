@@ -10,6 +10,7 @@ const currencyAliases: Record<string, string> = {
   USD: "USD",
   DOLAR: "USD",
   "AMERİKAN DOLARI": "USD",
+  "AMERIKAN DOLARI": "USD",
   "$": "USD",
   GBP: "GBP",
   STERLIN: "GBP",
