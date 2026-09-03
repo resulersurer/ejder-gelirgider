@@ -1,0 +1,13 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+enum Role { ADMIN FINANCE VIEWER }
+enum TransactionType { INCOME EXPENSE TRANSFER_IN TRANSFER_OUT EFT_IN EFT_OUT FAST_IN FAST_OUT SWIFT_IN SWIFT_OUT CREDIT_CARD BANK_FEE REFUND OTHER }
+enum Direction { IN OUT }
+enum TransactionStatus { CONFIRMED NEEDS_REVIEW IGNORED }
+model User { id String @id @default(cuid()) email String @unique name String? passwordHash String role Role @default(VIEWER) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model BankAccount { id String @id @default(cuid()) bankName String accountName String ibanMasked String currency String @default("TRY") active Boolean @default(true) transactions BankTransaction[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model BankTransaction { id String @id @default(cuid()) bankAccountId String? bankAccount BankAccount? @relation(fields:[bankAccountId],references:[id]) bank String transactionType TransactionType direction Direction amount Decimal @db.Decimal(18,2) currency String @default("TRY") transactionDate DateTime sender String? receiver String? description String? referenceNumber String? emailSubject String emailMessageId String @unique emailSender String confidenceScore Float status TransactionStatus @default(NEEDS_REVIEW) categoryId String? category Category? @relation(fields:[categoryId],references:[id]) tourId String? tour Tour? @relation(fields:[tourId],references:[id]) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model Category { id String @id @default(cuid()) name String @unique transactions BankTransaction[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model Tour { id String @id @default(cuid()) name String code String @unique startDate DateTime endDate DateTime status String transactions BankTransaction[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model EmailRule { id String @id @default(cuid()) bank String senderEmail String subjectPattern String? parserType String active Boolean @default(true) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model EmailProcessingLog { id String @id @default(cuid()) emailMessageId String @unique sender String subject String bankDetected String? status String errorMessage String? processedAt DateTime @default(now()) }

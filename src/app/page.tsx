@@ -1,69 +1,17 @@
-import Image from "next/image";
+const transactions = [
+  ["03 Eyl 2026", "14:32", "Garanti BBVA", "FAST Girişi", "Giriş", "+₺45.750,00", "Atlas Turizm A.Ş.", "Peru turu ön ödeme", "Tur Tahsilatı", "Onaylandı"],
+  ["03 Eyl 2026", "11:08", "Akbank", "EFT Çıkışı", "Çıkış", "−₺18.420,00", "Skyway Havacılık", "Biletleme ödemesi", "Uçak Ödemesi", "Onaylandı"],
+  ["02 Eyl 2026", "17:45", "İş Bankası", "Havale Girişi", "Giriş", "+₺112.900,00", "Kuzey Acenta Ltd.", "Kapadokya grup tahsilatı", "Acenta Tahsilatı", "İncelemede"],
+];
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+  return <main className="min-h-screen bg-[#f6f7f8] text-[#263441]">
+    <header className="border-b border-[#e5e9ee] bg-white px-6 py-4 lg:px-10"><div className="mx-auto flex max-w-[1500px] items-center justify-between"><div><p className="text-[10px] font-bold tracking-[.8px] text-[#8993a0]">03 EYLÜL 2026, PERŞEMBE</p><h1 className="mt-1 text-xl font-semibold">Finans özeti</h1></div><div className="flex items-center gap-4 text-xs text-[#697787]"><span className="hidden md:block"><i className="mr-2 inline-block h-2 w-2 rounded-full bg-[#19a878]" />Son kontrol: 14:36 · 4 yeni hareket</span><span className="grid h-8 w-8 place-items-center rounded-full bg-[#e6a072] text-[10px] font-bold text-white">RE</span><span className="hidden sm:block"><b className="text-[#2c3945]">Resul Ersürer</b><small className="block">Yönetici</small></span></div></div></header>
+    <div className="mx-auto max-w-[1500px] p-5 lg:p-8"><nav className="mb-7 flex gap-2 overflow-auto text-xs font-medium"><a className="rounded bg-[#263746] px-4 py-2 text-white" href="#dashboard">Dashboard</a><a className="px-4 py-2 text-[#617080]" href="#transactions">İşlemler</a><a className="px-4 py-2 text-[#617080]" href="#review">İnceleme Bekleyenler <b className="rounded-full bg-[#d4653c] px-1.5 py-0.5 text-[10px] text-white">3</b></a><a className="px-4 py-2 text-[#617080]" href="#accounts">Banka Hesapları</a><a className="px-4 py-2 text-[#617080]" href="#reports">Raporlar</a></nav>
+      <section id="dashboard" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{[["Bugünkü toplam giriş", "₺158.650,00", "↗ %12,4 düne göre", "#14835d"], ["Bugünkü toplam çıkış", "₺28.295,50", "↘ %8,1 düne göre", "#c75151"], ["Bugünkü net nakit akışı", "+₺130.354,50", "Girişler çıkışlardan yüksek", "#14835d"], ["Bu ay net", "+₺317.605,00", "↗ %19,8 geçen aya göre", "#14835d"]].map(([title, amount, detail, color]) => <article className="rounded-md border border-[#e5e9ee] bg-white p-5" key={title}><p className="text-xs text-[#6f7c8b]">{title}</p><strong className="my-3 block text-2xl tracking-normal">{amount}</strong><small style={{ color }} className="text-[11px]">{detail}</small></article>)}</section>
+      <section className="mt-5 grid gap-4 lg:grid-cols-[1.6fr_1fr]"><article className="rounded-md border border-[#e5e9ee] bg-white p-5"><div className="flex justify-between"><div><h2 className="font-semibold">Nakit akışı</h2><p className="mt-1 text-[11px] text-[#84909d]">Son 7 gün</p></div><button className="rounded border border-[#dce2e8] px-3 text-[11px] text-[#5f6d7c]">7 Gün⌄</button></div><div className="relative mt-6 h-44 border-b border-dashed border-[#dce3e7] bg-[repeating-linear-gradient(to_bottom,transparent_0,transparent_34px,#edf0f3_35px)]"><div className="absolute inset-x-2 top-8 h-20 border-t-2 border-[#208d69]" style={{ clipPath: "polygon(0 72%,16% 48%,32% 61%,49% 18%,65% 37%,81% 4%,100% 30%,100% 33%,81% 8%,65% 41%,49% 22%,32% 65%,16% 52%,0 75%)", background: "#208d69" }} /><div className="absolute inset-x-2 top-16 h-16 border-t-2 border-[#d4695b]" style={{ clipPath: "polygon(0 51%,16% 35%,32% 51%,49% 19%,65% 60%,81% 34%,100% 50%,100% 53%,81% 37%,65% 63%,49% 22%,32% 54%,16% 38%,0 54%)", background: "#d4695b" }} /></div><p className="mt-3 text-[11px] text-[#758190]"><i className="mr-1 inline-block h-2 w-2 rounded-full bg-[#208d69]" />Para girişi <i className="ml-5 mr-1 inline-block h-2 w-2 rounded-full bg-[#d4695b]" />Para çıkışı</p></article><article className="rounded-md border border-[#e5e9ee] bg-white p-5"><h2 className="font-semibold">Banka dağılımı</h2><p className="mt-1 text-[11px] text-[#84909d]">Bu ay hesap hareketleri</p><div className="mt-5 flex items-center justify-center gap-7"><div className="grid h-32 w-32 place-items-center rounded-full bg-[conic-gradient(#e1763b_0_42%,#c75151_42%_73%,#547fc5_73%_91%,#cad2d9_91%)]"><div className="grid h-20 w-20 place-items-center rounded-full bg-white text-center text-xs font-bold">₺1,24M<small className="block text-[9px] font-normal text-[#84909c]">Toplam hacim</small></div></div><div className="space-y-3 text-[11px] text-[#667383]"><p>● Garanti BBVA <b>%42</b></p><p>● Akbank <b>%31</b></p><p>● İş Bankası <b>%18</b></p><p>● Diğer <b>%9</b></p></div></div></article></section>
+      <section id="accounts" className="mt-7"><div className="flex items-end justify-between"><div><h2 className="font-semibold">Banka hesapları</h2><p className="mt-1 text-[11px] text-[#84909d]">Bağlı hesapların bu ayki özeti</p></div><a className="text-xs font-semibold text-[#168360]" href="#accounts">Tüm hesapları görüntüle →</a></div><div className="mt-4 grid gap-4 md:grid-cols-3">{[["Garanti BBVA", "₺420.000", "₺275.000", "+₺145.000"], ["Akbank", "₺286.450", "₺193.875", "+₺92.575"], ["İş Bankası", "₺178.250", "₺98.220", "+₺80.030"]].map(([bank, income, expense, net]) => <article className="rounded-md border border-[#e5e9ee] bg-white p-5" key={bank}><strong>{bank}</strong><dl className="mt-5 grid grid-cols-3 text-xs"><div><dt className="text-[#8b96a2]">Giriş</dt><dd className="mt-1 font-bold">{income}</dd></div><div><dt className="text-[#8b96a2]">Çıkış</dt><dd className="mt-1 font-bold">{expense}</dd></div><div><dt className="text-[#8b96a2]">Net</dt><dd className="mt-1 font-bold text-[#14835d]">{net}</dd></div></dl></article>)}</div></section>
+      <section id="transactions" className="mt-7 overflow-hidden rounded-md border border-[#e5e9ee] bg-white"><div className="flex items-center justify-between p-5"><div><h2 className="font-semibold">Son işlemler</h2><p className="mt-1 text-[11px] text-[#84909d]">En son banka hareketleri</p></div><div className="flex gap-2"><button className="rounded border border-[#dce2e8] px-3 py-2 text-[11px] text-[#5f6d7c]">Filtrele</button><button className="rounded bg-[#24795f] px-3 py-2 text-[11px] text-white">Dışa aktar</button></div></div><div className="overflow-auto"><table className="w-full min-w-[1100px] border-t border-[#e5e9ee] text-left text-[11px]"><thead className="bg-[#fbfcfc] text-[10px] text-[#8994a0]"><tr>{["Tarih / Saat", "Banka", "İşlem", "Giriş / Çıkış", "Tutar", "Gönderen / Alıcı", "Açıklama", "Kategori", "Durum"].map(x => <th className="whitespace-nowrap p-3 font-semibold" key={x}>{x}</th>)}</tr></thead><tbody>{transactions.map(row => <tr className="border-t border-[#eef0f2]" key={row[1]}>{row.map((cell, index) => <td className={`whitespace-nowrap p-3 ${index === 5 ? "font-bold" : ""} ${index === 4 ? (row[4] === "Giriş" ? "font-bold text-[#14835d]" : "font-bold text-[#c75151]") : ""}`} key={`${cell}-${index}`}>{cell}</td>)}</tr>)}</tbody></table></div></section>
     </div>
-  );
+  </main>;
 }
