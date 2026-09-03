@@ -3,6 +3,7 @@ import { getTours } from "@/services/tours";
 import { TourForm } from "./tour-form";
 
 export const metadata = { title: "Turlar | Ejder Finans" };
+export const dynamic = "force-dynamic";
 
 const money = (amount: number) => new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(amount);
 const statusLabel: Record<string, string> = { PLANLANDI: "Planlandı", DEVAM_EDIYOR: "Devam ediyor", TAMAMLANDI: "Tamamlandı", IPTAL: "İptal" };

@@ -4,6 +4,8 @@ import { requireSession, roleLabel } from "@/lib/auth-guard";
 import { logout } from "@/app/login/actions";
 import { BankDistributionChart, CashFlowChart } from "@/components/dashboard-charts";
 
+export const dynamic = "force-dynamic";
+
 const money = (amount: number) => new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(amount);
 
 export default async function Home() {

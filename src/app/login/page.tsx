@@ -3,6 +3,7 @@ import { getSession } from "@/lib/session";
 import { LoginForm } from "./login-form";
 
 export const metadata = { title: "Giriş | Ejder Finans" };
+export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
   const session = await getSession();

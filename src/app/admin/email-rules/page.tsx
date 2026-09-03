@@ -5,6 +5,7 @@ import { EmailRuleForm } from "./email-rule-form";
 import { ScanMailboxButton } from "./scan-mailbox-button";
 
 export const metadata = { title: "Mail Kuralları | Ejder Finans" };
+export const dynamic = "force-dynamic";
 
 export default async function EmailRulesPage() {
   await requireRole("ADMIN");

@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/auth-guard";
 import { getEmailLogs } from "@/services/logs";
 
 export const metadata = { title: "Loglar | Ejder Finans" };
+export const dynamic = "force-dynamic";
 
 const statusLabel: Record<string, string> = { PROCESSED: "İşlendi", IGNORED: "Yok sayıldı" };
 

@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/auth-guard";
 import { ReviewEditor } from "./review-editor";
 
+export const dynamic = "force-dynamic";
+
 const money = (amount: number, currency: string) => new Intl.NumberFormat("tr-TR", { style: "currency", currency }).format(amount);
 
 export default async function ReviewPage() {

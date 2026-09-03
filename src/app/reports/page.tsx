@@ -2,6 +2,7 @@ import { requireSession } from "@/lib/auth-guard";
 import { getCategoryNames, getDistinctBanks, getReportSummary, getReportTransactions } from "@/services/reports";
 
 export const metadata = { title: "Raporlar | Ejder Finans" };
+export const dynamic = "force-dynamic";
 
 const money = (amount: number) => new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(amount);
 

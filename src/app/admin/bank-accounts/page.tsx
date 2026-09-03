@@ -4,6 +4,7 @@ import { toggleBankAccountActive } from "./actions";
 import { BankAccountForm } from "./bank-account-form";
 
 export const metadata = { title: "Banka Hesapları | Ejder Finans" };
+export const dynamic = "force-dynamic";
 
 export default async function BankAccountsPage() {
   await requireRole("ADMIN");
