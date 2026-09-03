@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/auth-guard";
 import { getEmailRules } from "@/services/email-rules";
 import { toggleEmailRuleActive } from "./actions";
 import { EmailRuleForm } from "./email-rule-form";
+import { ScanMailboxButton } from "./scan-mailbox-button";
 
 export const metadata = { title: "Mail Kuralları | Ejder Finans" };
 
@@ -17,6 +18,7 @@ export default async function EmailRulesPage() {
 
         <section className="mt-6 rounded-md border border-[#e5e9ee] bg-white p-5">
           <EmailRuleForm />
+          <ScanMailboxButton />
         </section>
 
         <section className="mt-6 space-y-3">

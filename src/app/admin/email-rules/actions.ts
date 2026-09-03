@@ -3,6 +3,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth-guard";
+import { ingestBankEmails } from "@/services/bank-email-ingestion";
 
 const createSchema = z.object({
   bank: z.string().trim().min(2).max(80),
@@ -12,6 +13,21 @@ const createSchema = z.object({
 });
 
 export type EmailRuleFormState = { error?: string } | undefined;
+export type ScanState = { error?: string; message?: string } | undefined;
+
+export async function runBankEmailScan(): Promise<ScanState> {
+  await requireRole("ADMIN");
+  try {
+    const result = await ingestBankEmails();
+    revalidatePath("/");
+    revalidatePath("/review");
+    revalidatePath("/logs");
+    revalidatePath("/admin/email-rules");
+    return { message: `Tarama tamamlandı: ${result.processed} işlendi, ${result.ignored} yok sayıldı, ${result.skipped} tekrar olduğu için atlandı.` };
+  } catch {
+    return { error: "Posta kutusu taranamadı. IMAP yapılandırmasını ve Vercel loglarını kontrol edin." };
+  }
+}
 
 export async function createEmailRule(_prevState: EmailRuleFormState, formData: FormData): Promise<EmailRuleFormState> {
   await requireRole("ADMIN");
