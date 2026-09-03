@@ -1,7 +1,8 @@
 import type { MailForParsing, ParsedTransaction } from "./types";
 import { normalizeCurrency } from "@/lib/currency";
 
-const amountPattern = /(?:tutar|işlem tutarı|amount)[^\d]*([\d.]+(?:,\d{2})?)\s*(TL|TRY|USD|EUR|€|\$)?/i;
+const currencyToken = "TRY|TL|TÜRK\s+L[Iİ]RASI|USD|DOLAR|AMER[Iİ]KAN\s+DOLARI|EUR|EURO|GBP|STERL[Iİ]N|CHF|[Iİ]SV[Iİ]ÇRE\s+FRANGI|JPY|JAPON\s+YEN[Iİ]|AED|BAE\s+D[Iİ]RHEM[Iİ]|SAR|SUUD[Iİ]\s+R[Iİ]YAL[Iİ]|KWD|QAR|CAD|AUD|SEK|NOK|DKK|RUB|CNY|PLN|₺|€|\$|£|¥|[A-Z]{3}";
+const amountPattern = new RegExp(`(?:tutar|işlem tutarı|amount|tutarlı)[^\\d]*([\\d.]+(?:,\\d{2})?)\\s*(${currencyToken})?`, "i");
 const referencePattern = /(?:referans|işlem no|işlem numarası|referans no)[:\s#-]*([A-Z0-9-]{5,})/i;
 const outgoingPattern = /(?:borç|çıkış|ödeme|harcama|gönderildi|çekildi|debit)/i;
 const fastPattern = /\bFAST\b/i;

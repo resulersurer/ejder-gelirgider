@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
   for (const row of rows) {
     lines.push([
       row.transactionDate.toISOString(), row.bank, row.transactionType, row.direction === "IN" ? "Giriş" : "Çıkış",
-      row.amount.toFixed(2), "TRY", row.sender ?? "", row.receiver ?? "", row.description ?? "", row.category ?? "", row.status,
+      row.amount.toFixed(2), row.currency, row.sender ?? "", row.receiver ?? "", row.description ?? "", row.category ?? "", row.status,
     ].map((value) => csvField(String(value))).join(","));
   }
   const csv = `\uFEFF${lines.join("\r\n")}`;

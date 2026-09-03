@@ -1,13 +1,48 @@
 const currencyAliases: Record<string, string> = {
   TL: "TRY",
   TRY: "TRY",
+  "TÜRK LİRASI": "TRY",
+  "TÜRK LIRASI": "TRY",
   "₺": "TRY",
   EUR: "EUR",
+  EURO: "EUR",
   "€": "EUR",
   USD: "USD",
+  DOLAR: "USD",
+  "AMERİKAN DOLARI": "USD",
   "$": "USD",
+  GBP: "GBP",
+  STERLIN: "GBP",
+  "İNGİLİZ STERLİNİ": "GBP",
+  "İNGILIZ STERLINI": "GBP",
+  "£": "GBP",
+  CHF: "CHF",
+  "İSVİÇRE FRANGI": "CHF",
+  "ISVICRE FRANGI": "CHF",
+  JPY: "JPY",
+  "JAPON YENİ": "JPY",
+  "JAPON YENI": "JPY",
+  "¥": "JPY",
+  AED: "AED",
+  "BAE DİRHEMİ": "AED",
+  "BAE DIRHEMI": "AED",
+  SAR: "SAR",
+  "SUUDİ RİYALİ": "SAR",
+  "SUUDI RIYALI": "SAR",
+  KWD: "KWD",
+  QAR: "QAR",
+  CAD: "CAD",
+  AUD: "AUD",
+  SEK: "SEK",
+  NOK: "NOK",
+  DKK: "DKK",
+  RUB: "RUB",
+  CNY: "CNY",
+  PLN: "PLN",
 };
 
 export function normalizeCurrency(value?: string): string {
-  return currencyAliases[value?.trim().toUpperCase() ?? ""] ?? "TRY";
+  const normalized = value?.trim().toLocaleUpperCase("tr-TR") ?? "";
+  if (currencyAliases[normalized]) return currencyAliases[normalized];
+  return /^[A-Z]{3}$/.test(normalized) ? normalized : "TRY";
 }

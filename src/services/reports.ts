@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 export type ReportFilters = { from?: Date; to?: Date; bank?: string; category?: string };
 export type ReportTransaction = {
   id: string; transactionDate: Date; bank: string; transactionType: string; direction: "IN" | "OUT";
-  amount: number; sender: string | null; receiver: string | null; description: string | null; category: string | null; status: string;
+  amount: number; currency: string; sender: string | null; receiver: string | null; description: string | null; category: string | null; status: string;
 };
 export type ReportSummary = { income: number; expense: number; net: number; count: number };
 
@@ -19,7 +19,7 @@ function buildWhere(filters: ReportFilters) {
 export async function getReportTransactions(filters: ReportFilters): Promise<ReportTransaction[]> {
   if (!db) return [];
   const rows = await db.bankTransaction.findMany({ where: buildWhere(filters), include: { category: { select: { name: true } } }, orderBy: { transactionDate: "desc" }, take: 1000 });
-  return rows.map((row) => ({ id: row.id, transactionDate: row.transactionDate, bank: row.bank, transactionType: row.transactionType, direction: row.direction, amount: row.amount.toNumber(), sender: row.sender, receiver: row.receiver, description: row.description, category: row.category?.name ?? null, status: row.status }));
+  return rows.map((row) => ({ id: row.id, transactionDate: row.transactionDate, bank: row.bank, transactionType: row.transactionType, direction: row.direction, amount: row.amount.toNumber(), currency: row.currency, sender: row.sender, receiver: row.receiver, description: row.description, category: row.category?.name ?? null, status: row.status }));
 }
 
 export async function getReportSummary(filters: ReportFilters): Promise<ReportSummary> {

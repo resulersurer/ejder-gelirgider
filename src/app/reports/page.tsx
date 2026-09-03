@@ -1,10 +1,11 @@
 import { requireSession } from "@/lib/auth-guard";
+import { normalizeCurrency } from "@/lib/currency";
 import { getCategoryNames, getDistinctBanks, getReportSummary, getReportTransactions } from "@/services/reports";
 
 export const metadata = { title: "Raporlar | Ejder Finans" };
 export const dynamic = "force-dynamic";
 
-const money = (amount: number) => new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(amount);
+const money = (amount: number, currency = "TRY") => new Intl.NumberFormat("tr-TR", { style: "currency", currency: normalizeCurrency(currency) }).format(amount);
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -66,7 +67,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                     <td className="whitespace-nowrap p-3 font-bold">{row.bank}</td>
                     <td className="whitespace-nowrap p-3">{row.transactionType}</td>
                     <td className="whitespace-nowrap p-3">{row.direction === "IN" ? "Giriş" : "Çıkış"}</td>
-                    <td className={`whitespace-nowrap p-3 font-bold ${row.direction === "IN" ? "text-[#14835d]" : "text-[#c75151]"}`}>{money(row.amount)}</td>
+                    <td className={`whitespace-nowrap p-3 font-bold ${row.direction === "IN" ? "text-[#14835d]" : "text-[#c75151]"}`}>{money(row.amount, row.currency)}</td>
                     <td className="whitespace-nowrap p-3">{row.category ?? "Kategorisiz"}</td>
                     <td className="whitespace-nowrap p-3">{row.status}</td>
                   </tr>
