@@ -9,7 +9,7 @@ type IngestionResult = { processed: number; ignored: number; skipped: number };
 export async function ingestBankEmails(): Promise<IngestionResult> {
   if (!db) throw new Error("DATABASE_URL yapılandırılmadı.");
   const user = process.env.YANDEX_EMAIL; const pass = process.env.YANDEX_APP_PASSWORD;
-  if (!user || !pass) throw new Error("Yandex IMAP bilgileri yapılandırılmadı.");
+  if (!user || !pass) throw new Error("Muhasebe IMAP bilgileri yapılandırılmadı.");
   const client = new ImapFlow({ host: "imap.yandex.com", port: 993, secure: true, auth: { user, pass }, logger: false });
   const result = { processed: 0, ignored: 0, skipped: 0 };
   const rules = await db.emailRule.findMany({ where: { active: true }, select: { bank: true, senderEmail: true, subjectPattern: true, parserType: true } });

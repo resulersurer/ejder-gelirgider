@@ -13,7 +13,7 @@ export default async function LogsPage() {
       <div className="mx-auto max-w-5xl">
         <a className="text-xs font-semibold text-[#168360]" href="/">← Dashboard</a>
         <h1 className="mt-4 text-2xl font-semibold">Mail işleme logları</h1>
-        <p className="mt-1 text-sm text-[#718091]">Yandex IMAP taramasında işlenen veya yok sayılan e-postalar. Ham mail içeriği saklanmaz.</p>
+        <p className="mt-1 text-sm text-[#718091]">Muhasebe posta kutusu IMAP taramasında işlenen veya yok sayılan e-postalar. Ham mail içeriği saklanmaz.</p>
 
         <section className="mt-6 overflow-hidden rounded-md border border-[#e5e9ee] bg-white">
           <div className="overflow-auto">
