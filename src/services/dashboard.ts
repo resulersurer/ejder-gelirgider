@@ -13,7 +13,7 @@ export type BankShare = { bank: string; total: number; percentage: number };
 export type DashboardData = {
   connected: boolean; todayIncome: number; todayExpense: number;
   monthIncome: number; monthExpense: number; transactions: TransactionRow[];
-  lastCheckedAt: Date | null; dailyFlow: DailyFlowPoint[]; bankDistribution: BankShare[];
+  lastCheckedAt: Date | null; dailyFlow: DailyFlowPoint[]; bankDistribution: BankShare[]; reviewCount: number;
 };
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -27,12 +27,13 @@ export async function getDashboardData(): Promise<DashboardData> {
     const today = startOfDay(now);
     const month = new Date(now.getFullYear(), now.getMonth(), 1);
     const weekStart = new Date(today); weekStart.setDate(weekStart.getDate() - 6);
-    const [todayTransactions, monthTransactions, weekTransactions, recent, lastLog] = await Promise.all([
+    const [todayTransactions, monthTransactions, weekTransactions, recent, lastLog, reviewCount] = await Promise.all([
       db.bankTransaction.findMany({ where: { transactionDate: { gte: today }, status: "CONFIRMED" }, select: { amount: true, direction: true } }),
       db.bankTransaction.findMany({ where: { transactionDate: { gte: month }, status: "CONFIRMED" }, select: { amount: true, direction: true, bank: true } }),
       db.bankTransaction.findMany({ where: { transactionDate: { gte: weekStart }, status: "CONFIRMED" }, select: { amount: true, direction: true, transactionDate: true } }),
       db.bankTransaction.findMany({ orderBy: { transactionDate: "desc" }, take: 15, include: { category: { select: { name: true } } } }),
       db.emailProcessingLog.findFirst({ where: { status: "PROCESSED" }, orderBy: { processedAt: "desc" }, select: { processedAt: true } }),
+      db.bankTransaction.count({ where: { status: "NEEDS_REVIEW" } }),
     ]);
     const totals = (items: { amount: { toNumber(): number }; direction: "IN" | "OUT" }[]) => items.reduce((result, item) => {
       result[item.direction === "IN" ? "income" : "expense"] += item.amount.toNumber(); return result;
@@ -51,12 +52,12 @@ export async function getDashboardData(): Promise<DashboardData> {
     const totalVolume = [...bankTotals.values()].reduce((sum, value) => sum + value, 0);
     const bankDistribution: BankShare[] = [...bankTotals.entries()].sort((a, b) => b[1] - a[1]).map(([bank, total]) => ({ bank, total, percentage: totalVolume ? Math.round((total / totalVolume) * 1000) / 10 : 0 }));
 
-    return { connected: true, todayIncome: daily.income, todayExpense: daily.expense, monthIncome: monthly.income, monthExpense: monthly.expense, lastCheckedAt: lastLog?.processedAt ?? null, dailyFlow, bankDistribution, transactions: recent.map((item) => ({ id: item.id, date: formatDate(item.transactionDate), time: formatTime(item.transactionDate), bank: item.bank, type: item.transactionType, direction: item.direction, amount: item.amount.toNumber(), counterparty: item.direction === "IN" ? item.sender ?? "-" : item.receiver ?? "-", description: item.description ?? "-", category: item.category?.name ?? "Kategorisiz", status: item.status })) };
+    return { connected: true, todayIncome: daily.income, todayExpense: daily.expense, monthIncome: monthly.income, monthExpense: monthly.expense, lastCheckedAt: lastLog?.processedAt ?? null, dailyFlow, bankDistribution, reviewCount, transactions: recent.map((item) => ({ id: item.id, date: formatDate(item.transactionDate), time: formatTime(item.transactionDate), bank: item.bank, type: item.transactionType, direction: item.direction, amount: item.amount.toNumber(), counterparty: item.direction === "IN" ? item.sender ?? "-" : item.receiver ?? "-", description: item.description ?? "-", category: item.category?.name ?? "Kategorisiz", status: item.status })) };
   } catch {
     return emptyDashboard(false);
   }
 }
 
 function emptyDashboard(connected: boolean): DashboardData {
-  return { connected, todayIncome: 0, todayExpense: 0, monthIncome: 0, monthExpense: 0, transactions: [], lastCheckedAt: null, dailyFlow: [], bankDistribution: [] };
+  return { connected, todayIncome: 0, todayExpense: 0, monthIncome: 0, monthExpense: 0, transactions: [], lastCheckedAt: null, dailyFlow: [], bankDistribution: [], reviewCount: 0 };
 }
