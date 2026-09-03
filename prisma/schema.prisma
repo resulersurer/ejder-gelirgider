@@ -104,6 +104,7 @@ model EmailRule {
 	bank String
 	senderEmail String
 	subjectPattern String?
+	contentPattern String?
 	parserType String
 	active Boolean @default(true)
 	createdAt DateTime @default(now())

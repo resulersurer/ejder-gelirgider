@@ -12,7 +12,7 @@ export async function ingestBankEmails(): Promise<IngestionResult> {
   if (!user || !pass) throw new Error("Muhasebe IMAP bilgileri yapılandırılmadı.");
   const client = new ImapFlow({ host: "imap.yandex.com", port: 993, secure: true, auth: { user, pass }, logger: false });
   const result = { processed: 0, ignored: 0, skipped: 0 };
-  const rules = await db.emailRule.findMany({ where: { active: true }, select: { bank: true, senderEmail: true, subjectPattern: true, parserType: true } });
+  const rules = await db.emailRule.findMany({ where: { active: true }, select: { bank: true, senderEmail: true, subjectPattern: true, contentPattern: true, parserType: true } });
   await client.connect();
   const lock = await client.getMailboxLock("INBOX");
   try {

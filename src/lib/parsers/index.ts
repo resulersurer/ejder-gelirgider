@@ -8,13 +8,14 @@ import { parseIsbank } from "./isbank";
 const parsersByType: Record<string, BankParser> = { akbank: parseAkbank, garanti: parseGaranti, isbank: parseIsbank };
 
 // Only rules loaded from the EmailRule table are accepted for financial processing.
-export type EmailRuleConfig = { bank: string; senderEmail: string; subjectPattern: string | null; parserType: string };
+export type EmailRuleConfig = { bank: string; senderEmail: string; subjectPattern: string | null; contentPattern: string | null; parserType: string };
 
 export function detectAndParse(mail: MailForParsing, rules: EmailRuleConfig[] = []): ParsedTransaction | null {
   const matchedRule = rules.find((rule) => {
     const senderMatches = mail.sender.toLowerCase().includes(rule.senderEmail.toLowerCase());
     const subjectMatches = !rule.subjectPattern || safeRegExp(rule.subjectPattern).test(mail.subject);
-    return senderMatches && subjectMatches;
+    const contentMatches = !rule.contentPattern || safeRegExp(rule.contentPattern).test(mail.text);
+    return senderMatches && subjectMatches && contentMatches;
   });
   if (matchedRule) {
     const transaction = (parsersByType[matchedRule.parserType] ?? ((m: MailForParsing) => parseGeneric(matchedRule.bank, m)))(mail);
