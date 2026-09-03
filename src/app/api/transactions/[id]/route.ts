@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/session";
@@ -15,5 +16,10 @@ export async function PATCH(request: NextRequest, context: RouteContext<"/api/tr
   if (!payload.success) return Response.json({ error: "Geçersiz güncelleme" }, { status: 400 });
   const { id } = await context.params;
   const transaction = await db.bankTransaction.update({ where: { id }, data: payload.data, select: { id: true, status: true } }).catch(() => null);
+  if (transaction) {
+    revalidatePath("/");
+    revalidatePath("/reports");
+    revalidatePath("/review");
+  }
   return transaction ? Response.json({ transaction }) : Response.json({ error: "İşlem bulunamadı" }, { status: 404 });
 }
