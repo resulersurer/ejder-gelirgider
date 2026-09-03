@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 
 export const runtime = "nodejs";
 
@@ -11,6 +12,8 @@ const querySchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const session = await getSession();
+  if (!session) return Response.json({ error: "Giriş gerekli" }, { status: 401 });
   if (!db) return Response.json({ transactions: [], message: "DATABASE_URL yapılandırılmadı." });
   const parsed = querySchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
   if (!parsed.success) return Response.json({ error: "Geçersiz filtreler" }, { status: 400 });
