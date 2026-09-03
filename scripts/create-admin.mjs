@@ -29,7 +29,7 @@ if (!process.env.DATABASE_URL || process.env.DATABASE_URL === "[SENSITIVE]") {
   process.exit(1);
 }
 
-const { PrismaClient } = await import("../src/generated/prisma/index.js");
+const { PrismaClient } = await import("@prisma/client");
 
 function ask(question) {
   return new Promise((resolve) => {

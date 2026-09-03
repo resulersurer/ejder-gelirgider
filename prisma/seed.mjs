@@ -19,7 +19,7 @@ function loadEnvFile(filePath) {
 loadEnvFile(path.join(projectRoot, ".env.local"));
 loadEnvFile(path.join(projectRoot, ".env"));
 
-const { PrismaClient } = await import("../src/generated/prisma/index.js");
+const { PrismaClient } = await import("@prisma/client");
 
 const CATEGORY_NAMES = [
   "Tur Tahsilatı", "Acenta Tahsilatı", "Otel Ödemesi", "Uçak Ödemesi", "Rehber Ödemesi",
